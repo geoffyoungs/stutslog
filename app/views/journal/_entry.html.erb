@@ -1,0 +1,11 @@
+<div <%=raw today ? ' id="today"' : '' %> class="journal-item <%=raw today ? '' : (entry.date.weekend? ? ' weekend' : ' weekday') %>" data-id="<%= entry.id.to_s %>">
+    <div class="head<%=raw today ? ' ui-widget-header' : '' %>">
+      <h3><%= today ? 'Today' : entry.date.strftime('%A %e %B %Y') %></h3> 
+      <% unless today %>
+        <span class="date"><%= time_ago_in_words(entry.date)+" ago" %></span>
+      <% end %>
+    </div>
+    <div data-date="<%=raw entry.date.strftime('%Y-%m-%d') %>" class="journal-entry" contenteditable="true">
+        <%=raw entry.entry %>
+    </div>
+</div>

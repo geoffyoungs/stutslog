@@ -1,0 +1,138 @@
+<div id="top">
+	<div id="user">
+		<%= current_user.email %> | <%= link_to("Logout", :destroy_user_session) %>
+	</div>
+	<div id="tools">
+		<button id="bold" style="font-weight: bold">B</button>
+		<button id="italic" style="font-style: italic">I</button>
+		<button id="hiliteColor" data-arg="#ffff00" style="background: #990">Highlight</button>		
+		<button id="removeformat">Clear formatting</button>
+	</div>
+</div>
+<div id="sidebar">
+	<div id="standard-pane">
+		<div id="datepicker">
+		</div>
+
+		<div id="search-box">
+			<input placeholder="Search..." type="search">
+		</div>
+		<div id="search-results">
+		</div>
+	</div>
+</div>
+<div id="journal-pane-container">
+	<div id="today">
+	<%= render :partial => 'entry', :locals => { :entry => @today, :today => true } %>
+	</div>
+<div id="journal-pane">
+	<div id="journal-data">
+		<% for entry in @entries %>
+			<%= render :partial => 'entry', :locals => { :entry => entry, :today => false } %>
+		<% end %>
+	</div>
+</div>
+</div>
+<script>
+jQuery(function ($) {
+	$(".journal-entry").live('blur', function () {
+		$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : $(this).data('date'), 'entry' : $(this).html()  } })
+	});
+
+	var resize = function () {
+		$('#journal-pane-container, #sidebar').css('height', ($(window).height()-32)+"px");
+		$('#journal-pane').css('min-height', '100%');
+		$('#today').css('width', ($('#journal-data').width())+"px");
+	};
+	resize();
+	$(window).resize(resize);
+
+	var cont = $('#journal-pane-container');
+	//cont.scrollTop(64);
+	var i = 0;
+	cont.scroll(function (e) {
+		if (cont.scrollTop() < 64 && false) {
+			console.log("Loading more content...");
+			i += 1;
+			var h = 83 + parseInt(Math.random() * 300);
+			var first_child = $("#journal-pane :first-child").first();
+			var offset = first_child.offset().top;
+			console.log(first_child);
+			$('#journal-pane').prepend('<div style="height: '+h+'px; border: 1px solid #ccc;">Blah '+i+'</div>');
+			console.log("Scroll top was %i is now %i", offset, first_child.offset().top);
+			console.log(first_child);
+			cont.scrollTop(first_child.offset().top);
+			// Load more content...
+		}
+	});
+
+
+	function clearStyleFromSelection() {
+		var sel = window.getSelection();
+		var blat = [], postscan = [];
+		for (var i = 0; i < sel.rangeCount; i++) {
+			var range = sel.getRangeAt(i);
+			for (var node = range.startContainer; node && node !== range.endContainer; 
+				node = node.nextSibling) { 
+				if (1 === node.nodeType) {
+					if ('SPAN' === node.nodeName.toUpperCase()) {
+						if ($(node).hasClass('Apple-style-span')) {
+							blat.push(node);
+						}
+					} else {
+						postscan.push(node);
+					}
+				}
+			}
+		}
+		var eliminate = function(index, node) {
+			$(node).replaceWith($(node).html());
+		}
+		$.each(postscan, function (index, node) {
+			$(node).find('.Apple-style-span').each(eliminate);
+		});
+		$.each(blat, eliminate);
+	}
+
+	document.execCommand('styleWithCSS', false, true);
+	$("#tools button").each(function () {
+		var id = $(this).attr('id');
+		var arg = null;
+		arg = $(this).data("arg");
+
+		$(this).click(function () {
+			console.log("execCommand %s", id);
+			if ("removeformat" === id) {
+				document.execCommand('unlink', false, null);
+				document.execCommand('removeformat', false, null);
+				clearStyleFromSelection();
+			} else {
+				document.execCommand(id, false, arg);
+			}
+		});
+	});
+
+	$(function() {
+		$( "#datepicker" ).datepicker({
+			dateFormat : "yy-mm-dd",
+			beforeShowDay : function (date) {
+				//console.log("beforeShowDay %s", date);
+				return [true, '', "Custom: "+date.toString()];
+			},
+			onSelect : function (dateText, inst) {
+				console.log("select %s", dateText);
+			}
+		});
+	});
+
+	var focusedElement = null;
+	$(".journal-pane .journal-entry").live('focus', function () {
+		focusedElement = $(this);
+	});
+	$(".journal-pane .journal-entry").live("blur", function () {
+		if ($(".journal-entry:focus").size() == 0) {
+			focusedElement = null;
+		}
+	});
+});
+</script>

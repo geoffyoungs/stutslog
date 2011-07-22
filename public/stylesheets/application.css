@@ -1,0 +1,174 @@
+body, h1, h2, h3, h4, p, div, td, th, dt, dl, li, dd {
+	font-family: "Droid Sans", Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3, h4 {
+	font-weight: bold;
+}
+h1 {
+	font-size: 28px;
+}
+h2 {
+	font-size: 24px;
+}
+h3 {
+	font-size: 18px;
+}
+
+body, p, td, th, div, dt, dl, dd, li {
+	font-size: 14px;
+}
+
+
+.head h3 {
+	display: inline-block;
+	font-family: Fontin, serif;
+	font-weight: normal;
+	font-style: italic;
+	width: 12em;
+}
+.head {
+/*	background: #f7f7f7;*/
+	border-top: 1px solid #eee;
+/*	border-bottom: 1px solid #eee;*/
+	padding: 6px 12px;;
+}
+.head .date {
+	color: #999;
+}
+.head.ui-widget-header .date {
+	color: #f99;
+}
+
+.journal-item.weekday .head {
+	background: #f7f7f7;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f0f7ff), to(#fff));
+}
+
+#today.journal-item .head {
+}
+
+
+.journal-item.weekend {
+	background: #f7f7f7;
+}
+.journal-item.weekend .head {
+	background: #f7f7f7;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ddd), to(#f7f7f7));
+
+}
+.journal-item.weekend h3 {
+	color: #666;
+}
+
+.journal-entry {
+	min-height: 24px;
+}
+
+#today .journal-entry {
+	min-height: 150px;
+}
+body {
+	overflow: hidden;
+}
+#journal-pane-container {
+	width: 76%;
+	min-width: 450px;
+	height: 100%;
+	overflow-y: scroll;
+	overslow-x: hidden;
+	top: 32px;
+	position: relative;
+}
+#journal-pane {
+/*	padding-top: 64px;*/
+}
+/*#today {
+	bottom: 0px;
+	position: absolute;
+}*/
+
+#top {
+	background: #333;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#666666), to(#fff), color-stop(0.6,#333), color-stop(0.9, #000));
+	position: fixed;
+	height: 32px;
+	width: 100%;
+	z-index: 20;
+	color: #fff;
+	font-weight: bold;
+}
+#top a:link {
+	background: inherit;
+	color: #cccdce;
+	font-weight: bold;
+}
+#top a:hover {
+	background: inherit;
+	color: white;
+}
+#user, #tools {
+	padding: 2px 12px;
+	display: inline-block;
+	width: 20em;
+}
+#tools {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+#top #tools button {
+	background: inherit;
+	border: 1px solid white;
+	color: white;
+}
+
+.journal-entry {
+	padding: 0.5em;
+}
+.journal-entry[contenteditable]:focus {
+	outline: none;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ffc));
+}
+.weekend .journal-entry[contenteditable]:focus {
+	outline: none;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f7f7f7), to(#ffc));
+}
+
+#sidebar {
+	position: fixed;
+	width: 24%;
+	height: 100%;
+	overflow: hidden;
+	top: 32px;
+	right: 0;
+}
+
+#standard-pane {
+	padding: 1em;
+}
+
+#datepicker {
+	width: 17.2em;
+	margin: 8px auto;
+}
+
+#search-box {
+	margin: 8px auto;
+}
+#search-box input[type="search"] {
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 12px;
+	padding: 2px 8px;
+}
+
+b, strong {
+	font-weight: bold;
+}
+i, em {
+	font-style: italic;
+}
