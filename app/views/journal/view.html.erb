@@ -60,6 +60,9 @@ jQuery(function ($) {
 		$('#journal-pane-container, #sidebar').css('height', ($(window).height()-32)+"px");
 		$('#journal-pane').css('min-height', '100%');
 		$('#today').css('width', ($('#journal-data').width())+"px");
+		var res = $("#search-results");
+		res.css('overflow-y','auto');
+		res.css('height', ($(window).height() - 32 - res[0].offsetTop)+"px");
 	};
 	resize();
 	$(window).resize(resize);
