@@ -41,7 +41,7 @@ body, p, td, th, div, dt, dl, dd, li {
 }
 
 .journal-item.weekday .head {
-	background-color: #f7f7f7;
+	background-color: #f0f7ff;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f0f7ff), to(#fff));
 	background-image: -moz-linear-gradient(top, #f0f7ff, #fff);
 }
@@ -130,6 +130,7 @@ body {
 
 .journal-entry {
 	padding: 0.5em;
+	line-height: 1.2em;
 }
 .journal-entry[contenteditable]:focus {
 	outline: none;
@@ -152,22 +153,64 @@ body {
 }
 
 #standard-pane {
-	padding: 1em;
 }
 
 #datepicker {
 	width: 17.2em;
-	margin: 8px auto;
+	margin: 2em auto;
 }
 
 #search-box {
-	margin: 8px auto;
+	margin: 2em;
+	text-align: center;	
 }
+
+#search-results h4 {
+	margin: 0.3em 0.7em;
+}
+#search-results h5 {
+	font-family: Fontin, serif;
+	font-style: italic;
+	font-size: 110%;
+	color: #224;
+	margin-bottom: 0.5em;
+}
+
+.highlight-1 {
+	background: #ffff00;
+}
+.highlight-2 {
+	background: #99ff66;
+}
+.highlight-3 {
+	background: #66ccff;
+}
+.highlight-4 {
+	background: #ffcc00;
+}
+.highlight-5 {
+	background: #ff9999;
+}
+
+
 #search-box input[type="search"] {
-	width: 100%;
 	border: 1px solid #ccc;
+	width: 90%;
 	border-radius: 12px;
 	padding: 2px 8px;
+	text-align: left;
+}
+
+#search-results ul {
+	list-style: none;
+}
+#search-results li {
+	list-style: none;	
+	border-top: 1px solid #cdf;
+	padding: 0.5em;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f0f7ff), to(#fff));
+	background-image: -moz-linear-gradient(top, #f0f7ff, #fff);
+
 }
 
 b, strong {
