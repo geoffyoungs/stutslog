@@ -25,7 +25,10 @@ class JournalController < ApplicationController
 	end
 
 	def search
-		params[:q]
+		tokens = JournalEntry.text_to_tokens(params[:q])
+		@entries = JournalEntry.all_in(:keywords => tokens).order_by([[:date, :desc]])
+
+		render :layout => false
 	end
 
 	def update

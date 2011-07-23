@@ -15,7 +15,10 @@
 		</div>
 
 		<div id="search-box">
-			<input placeholder="Search..." type="search">
+			<%= form_tag(:search, :id => 'search',
+						 :update => 'search-results', :remote => true) do %>
+			<input id="q" name="q" placeholder="Search..." type="search">
+			<% end %>
 		</div>
 		<div id="search-results">
 		</div>
@@ -38,6 +41,19 @@ jQuery(function ($) {
 	$(".journal-entry").live('blur', function () {
 		$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : $(this).data('date'), 'entry' : $(this).html()  } })
 	});
+
+	$("#search-results li[data-date]").live('click', function () {
+		var date = $(this).data('date');
+		var journal = $(".journal-item[data-date=\""+date+"\"]");
+
+		if (journal.size() > 0) {
+			$("#journal-pane-container").scrollTop(journal[0].offsetTop - 4);
+		} else {
+			console.log("Can't find %s - %o ", date, journal);
+			// Load journal?
+		}
+	});
+
 
 	var resize = function () {
 		$('#journal-pane-container, #sidebar').css('height', ($(window).height()-32)+"px");
@@ -123,6 +139,12 @@ jQuery(function ($) {
 				console.log("select %s", dateText);
 			}
 		});
+	});
+
+	$("#q").keydown(function () {
+		if ($(this).val().size > 2) {
+			$('#search').submit();
+		}
 	});
 
 	var focusedElement = null;

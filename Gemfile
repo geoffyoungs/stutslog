@@ -19,6 +19,8 @@ gem 'rails', '3.0.9'
 # Bundle the extra gems:
 # gem 'bj'
 gem 'nokogiri'
+gem 'text'
+gem 'ferret_tokenizer', :git => 'git://github.com/hunter/ferret_tokenizer.git'
 gem 'bson_ext', '~>1.3.1'
 gem 'mongo', '~>1.3.1'
 gem 'mongoid'

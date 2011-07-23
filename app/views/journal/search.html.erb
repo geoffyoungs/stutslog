@@ -1,2 +1,4 @@
-<h1>Journal#search</h1>
-<p>Find me in app/views/journal/search.html.erb</p>
+Results for <%= params[:q] %>
+<% for entry in @entries %>
+	<li> <%= entry.date %> <%= entry.entry %> </li>
+<% end %>

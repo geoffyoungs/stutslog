@@ -1,0 +1,13 @@
+var html = "<h4>Search Results ("+<%=j @entries.size.to_s %>+")</h4>";
+<% for entry in @entries %>
+	html += "<li data-date=\""+<%= j entry.date.strftime('%Y-%m-%d') %>+"\">";
+	html += "<h5>";
+	html += <%=j entry.date.strftime('%A %e %B %Y') %>;
+	html += "</h5>";
+	html += <%=j highlight_excerpts((entry.entry_text), 
+									   params[:q].strip.split(/\s+/),
+									   :radix => 36) %>;
+	html += "</li>";
+<% end %>
+
+$("#search-results").html(html);

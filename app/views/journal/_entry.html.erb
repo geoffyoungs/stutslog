@@ -1,4 +1,4 @@
-<div <%=raw today ? ' id="today"' : '' %> class="journal-item <%=raw today ? '' : (entry.date.weekend? ? ' weekend' : ' weekday') %>" data-id="<%= entry.id.to_s %>">
+<div <%=raw today ? ' id="today"' : '' %> class="journal-item <%=raw today ? '' : (entry.date.weekend? ? ' weekend' : ' weekday') %>" data-date="<%=raw entry.date.strftime('%Y-%m-%d') %>" data-id="<%= entry.id.to_s %>">
     <div class="head<%=raw today ? ' ui-widget-header' : '' %>">
       <h3><%= today ? 'Today' : entry.date.strftime('%A %e %B %Y') %></h3> 
       <% unless today %>
