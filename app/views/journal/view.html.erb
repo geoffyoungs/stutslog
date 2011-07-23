@@ -48,6 +48,7 @@ jQuery(function ($) {
 
 		if (journal.size() > 0) {
 			$("#journal-pane-container").scrollTop(journal[0].offsetTop - 4);
+			 $(".journal-entry[data-date=\""+date+"\"]").focus();
 		} else {
 			console.log("Can't find %s - %o ", date, journal);
 			// Load journal?
