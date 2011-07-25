@@ -14,7 +14,7 @@ class JournalEntry
 	index :keywords
 
 	def entry_text
-		Nokogiri.HTML(self.entry.gsub(/[>]/, '> ')).text()
+		Nokogiri.HTML(self.entry.to_s.gsub(/[>]/, '> ')).text()
 	end
 
 	before_save :update_keywords
