@@ -90,6 +90,10 @@ body {
 	position: absolute;
 }*/
 
+#spinner {
+	padding: 3em;
+}
+
 #top {
 	background-color: #333;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#666666), to(#fff), color-stop(0.6,#333), color-stop(0.9, #000));

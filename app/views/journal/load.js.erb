@@ -1,0 +1,15 @@
+$("#spinner").remove();
+window.loadingNext = false;
+	
+<% if @entries.nil? or @entries.empty? %>
+	window.NoMoreData = true;
+<% else %>
+(function () {
+	var html = '';
+	<% for entry in @entries %>
+		html += <%= raw(render(:partial => 'entry', :locals => { :entry => entry, :today => false }).to_json) %>;
+	<% end %>
+	$("#journal-data").append(html);
+})();
+<% end %>
+

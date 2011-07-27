@@ -46,25 +46,21 @@ jQuery(function ($) {
 
 	$("#search-results li[data-date]").live('click', function () {
 		var date = $(this).data('date');
-		var journal = $(".journal-item[data-date=\""+date+"\"]");
-
-		if (journal.size() > 0) {
-			$("#journal-pane-container").scrollTop(journal[0].offsetTop - 4);
-			 $(".journal-entry[data-date=\""+date+"\"]").focus();
-		} else {
-			console.log("Can't find %s - %o ", date, journal);
-			// Load journal & display in popup?
-		}
+		iWantDate(date);
 	});
 
 	$(function() {
 		$( "#datepicker" ).datepicker({
 			dateFormat : "yy-mm-dd",
 			beforeShowDay : function (date) {
+				var day = date.getDate();
+				var month = date.getMonth() + 1;
+				var year = date.getFullYear();
 				//console.log("beforeShowDay %s", date);
-				return [true, '', "Custom: "+date.toString()];
+				return [true, '', "Go to "+year+"-"+month+"-"+day];
 			},
 			onSelect : function (dateText, inst) {
+				iWantDate(dateText);
 				console.log("select %s", dateText);
 			}
 		});

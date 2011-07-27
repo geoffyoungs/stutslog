@@ -22,17 +22,15 @@ class JournalController < ApplicationController
 
 	def load
 		if entryDate = params['before-date']
-			@entry= JournalEntry.where(:date.lt => entryDate).order([[:date, Mongo::DESCENDING]]).first()
-			if @entry
-				render :content_type => 'application/javascript', :layout => false, :inline => <<-EOI
-					$("#spinner").remove();window.loadingNext = false;
-					$("#journal-data").append(<%= raw(render(:partial => 'entry', :locals => { :entry => @entry, :today => false }).to_json) %>);
-				EOI
-			else
-				render  :content_type => 'application/javascript', :text => 'window.NoMoreData = true;$("#spinner").remove();', :layout => false
+			@entries = JournalEntry.where(:date.lt => entryDate).order([[:date, Mongo::DESCENDING]]).limit((params[:limit]||1).to_i).all()
+			if @entries.empty?
+				render  :content_type => 'application/javascript', :text => '', :layout => false
 			end
-		else
-			# Something else
+		elsif range = params['date-range']
+			# from is the last seen date in the journal
+			# to is the desired date
+			from,to = range.split(/:/)
+			@entries = JournalEntry.where(:date.lt => from, :date.gte => to).order([[:date, Mongo::DESCENDING]]).all()
 		end
 	end
 
