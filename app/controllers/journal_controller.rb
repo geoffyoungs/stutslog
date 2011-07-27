@@ -21,7 +21,19 @@ class JournalController < ApplicationController
 	end
 
 	def load
-		dates = params[:dates].split(/,/)
+		if entryDate = params['before-date']
+			@entry= JournalEntry.where(:date.lt => entryDate).order([[:date, Mongo::DESCENDING]]).first()
+			if @entry
+				render :content_type => 'application/javascript', :layout => false, :inline => <<-EOI
+					$("#spinner").remove();window.loadingNext = false;
+					$("#journal-data").append(<%= raw(render(:partial => 'entry', :locals => { :entry => @entry, :today => false }).to_json) %>);
+				EOI
+			else
+				render  :content_type => 'application/javascript', :text => 'window.NoMoreData = true;$("#spinner").remove();', :layout => false
+			end
+		else
+			# Something else
+		end
 	end
 
 	def search

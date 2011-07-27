@@ -5,7 +5,8 @@
 	<div id="tools">
 		<button id="bold" style="font-weight: bold">B</button>
 		<button id="italic" style="font-style: italic">I</button>
-		<button id="hiliteColor" data-arg="#ffff00" style="background: #990">Highlight</button>		
+		<button id="code" data-arg="Droid Sans Mono, Courier, monospace" style="font-family: Droid Sans Mono, Courier, monospace;">Code</button>
+		<button id="highlight" data-arg="#ffff00" style="background: #990">Highlight</button>
 		<button id="removeformat">Clear formatting</button>
 	</div>
 </div>
@@ -37,6 +38,7 @@
 </div>
 </div>
 <script>
+var LoadData = <%=raw url_for(:load).to_json %>;
 jQuery(function ($) {
 	$(".journal-entry").live('blur', function () {
 		$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : $(this).data('date'), 'entry' : $(this).html()  } })
@@ -51,85 +53,8 @@ jQuery(function ($) {
 			 $(".journal-entry[data-date=\""+date+"\"]").focus();
 		} else {
 			console.log("Can't find %s - %o ", date, journal);
-			// Load journal?
+			// Load journal & display in popup?
 		}
-	});
-
-
-	var resize = function () {
-		$('#journal-pane-container, #sidebar').css('height', ($(window).height()-32)+"px");
-		$('#journal-pane').css('min-height', '100%');
-		$('#today').css('width', ($('#journal-data').width())+"px");
-		var res = $("#search-results");
-		res.css('overflow-y','auto');
-		res.css('height', ($(window).height() - 32 - res[0].offsetTop)+"px");
-	};
-	resize();
-	$(window).resize(resize);
-
-	var cont = $('#journal-pane-container');
-	//cont.scrollTop(64);
-	var i = 0;
-	cont.scroll(function (e) {
-		if (cont.scrollTop() < 64 && false) {
-			console.log("Loading more content...");
-			i += 1;
-			var h = 83 + parseInt(Math.random() * 300);
-			var first_child = $("#journal-pane :first-child").first();
-			var offset = first_child.offset().top;
-			console.log(first_child);
-			$('#journal-pane').prepend('<div style="height: '+h+'px; border: 1px solid #ccc;">Blah '+i+'</div>');
-			console.log("Scroll top was %i is now %i", offset, first_child.offset().top);
-			console.log(first_child);
-			cont.scrollTop(first_child.offset().top);
-			// Load more content...
-		}
-	});
-
-
-	function clearStyleFromSelection() {
-		var sel = window.getSelection();
-		var blat = [], postscan = [];
-		for (var i = 0; i < sel.rangeCount; i++) {
-			var range = sel.getRangeAt(i);
-			for (var node = range.startContainer; node && node !== range.endContainer; 
-				node = node.nextSibling) { 
-				if (1 === node.nodeType) {
-					if ('SPAN' === node.nodeName.toUpperCase()) {
-						if ($(node).hasClass('Apple-style-span')) {
-							blat.push(node);
-						}
-					} else {
-						postscan.push(node);
-					}
-				}
-			}
-		}
-		var eliminate = function(index, node) {
-			$(node).replaceWith($(node).html());
-		}
-		$.each(postscan, function (index, node) {
-			$(node).find('.Apple-style-span').each(eliminate);
-		});
-		$.each(blat, eliminate);
-	}
-
-	document.execCommand('styleWithCSS', false, true);
-	$("#tools button").each(function () {
-		var id = $(this).attr('id');
-		var arg = null;
-		arg = $(this).data("arg");
-
-		$(this).click(function () {
-			console.log("execCommand %s", id);
-			if ("removeformat" === id) {
-				document.execCommand('unlink', false, null);
-				document.execCommand('removeformat', false, null);
-				clearStyleFromSelection();
-			} else {
-				document.execCommand(id, false, arg);
-			}
-		});
 	});
 
 	$(function() {

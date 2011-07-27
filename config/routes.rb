@@ -18,6 +18,8 @@ Stutslog::Application.routes.draw do
 
   get "journal/view"
 
+  get "journal/load", :as => :load
+
   match "journal/search", :as => :search
 
   post "journal/update", :as => :update

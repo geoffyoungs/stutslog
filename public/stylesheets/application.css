@@ -81,7 +81,8 @@ body {
 	top: 32px;
 	position: relative;
 }
-#journal-pane {
+#journal-data {
+	margin-bottom: 64px;
 /*	padding-top: 64px;*/
 }
 /*#today {
@@ -112,7 +113,7 @@ body {
 #user, #tools {
 	padding: 2px 12px;
 	display: inline-block;
-	width: 20em;
+	width: 40%;
 }
 #tools {
 	-webkit-user-select: none;
@@ -132,11 +133,13 @@ body {
 	padding: 0.5em;
 	line-height: 1.2em;
 }
+
 .journal-entry[contenteditable]:focus {
 	outline: none;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ffc));
 	background-image: -moz-linear-gradient(top, #fff, #ffc);
 }
+
 .weekend .journal-entry[contenteditable]:focus {
 	outline: none;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f7f7f7), to(#ffc));
@@ -168,6 +171,7 @@ body {
 #search-results h4 {
 	margin: 0.3em 0.7em;
 }
+
 #search-results h5 {
 	font-family: Fontin, serif;
 	font-style: italic;
@@ -192,6 +196,24 @@ body {
 	background: #ff9999;
 }
 
+.journal-entry-highlight {
+	background: #ffff66;
+	border: 1px solid #ffcc00;
+	padding: 2px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.journal-entry-code {
+	font-family: "Droid Sans Mono", Courier New, Courier, monospace;
+	font-size: 0.9em;
+	background: #eeeeee;
+	padding: 2px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
 
 #search-box input[type="search"] {
 	border: 1px solid #ccc;
