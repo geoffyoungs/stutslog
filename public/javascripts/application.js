@@ -10,7 +10,10 @@ function displaySpinner() {
 }
 
 function loadRaw(url, callback) {
-	$.ajax(LoadData+url, { 'complete' : callback });
+	$.ajax(LoadData+url).always(function () {
+		if (callback)
+			callback();
+	});
 }
 
 function loadBeforeDate(date, limit, callback) {
@@ -54,22 +57,77 @@ function scrollToDate(date) {
 	return false;
 }
 
+function parseDateString(dateStr) {
+   var regex = /^(\d{4})-(\d{2})-(\d{2})$/;
+   var result = dateStr.match(regex);
+   if (result) {
+       var y, m, d;
+       y = parseInt(result[1], 10);
+       m = parseInt(result[2], 10);
+       d = parseInt(result[3], 10);
+       return new Date(y, m, d);
+   } else {
+       return null;
+   }
+}
+
+function dateInTheFuture(date) {
+	var now = new Date();
+	var date = parseDateString(date);
+
+	if (date.year == now.year) {
+		if (date.month == now.month) {
+			return (date.day > now.day);
+		} else {
+			return (date.month > now.month);
+		}
+	} else {
+		return (date.year > now.year);
+	}
+}
+
+function dateInThePast(date) {
+	return ! (parseDateString(date) > new Date());
+}
+
 function iWantDate(date) {
 	if (!scrollToDate(date)) {
-		if (window.console)
-			window.console.log("Can't find %s", date);
-		pushLoad(function () {
-			var container = $("#journal-pane-container");
-			container.scrollTop(container[0].scrollHeight -
-					container[0].clientHeight);
+		if (dateInTheFuture(date)) {
+			// Future date;
+			if (window.console)
+			window.console.log("Can't find %s - it's in the future", date);
 
+			return;
+		}
+		var container = $("#journal-pane-container");
+		container.scrollTop(container[0].scrollHeight -
+					container[0].clientHeight - 34);
+		pushLoad(function () {
 			displaySpinner();
 			loadDateRange(oldestDate(), date, function () {
 				scrollToDate(date);
 			});
 		});
-		// Load journal & display in popup?
+		// Load journal & display in popup if it's too old?
 	}
+}
+
+function setupChangeEvents() {
+	$('[contenteditable]').live('focus', function() {
+		var $this = $(this);
+		$this.data('before', $this.html());
+		return $this;
+	}).live('blur keyup paste', function() {
+		var $this = $(this);
+		if ($this.data('before') !== $this.html()) {
+			$this.data('before', $this.html());
+			$this.trigger('change');
+		}
+		return $this;
+	});
+}
+
+function nodeToText() {
 }
 
 jQuery(function ($) {
@@ -83,6 +141,17 @@ jQuery(function ($) {
 	};
 	resize();
 	$(window).resize(resize);
+
+	setupChangeEvents();
+
+	$('[contenteditable]').live('change', function () {
+		// Update ...?
+	});
+
+	$('[contenteditable]').live('keyup', function () {
+		// What is being typed?
+		var sel = window.getSelection()
+	});
 	
 	// Auto-scroll
 	var cont = $('#journal-pane-container');
@@ -115,7 +184,7 @@ jQuery(function ($) {
 		}
 	}
 	
-	function clearStyleFromSelection(klass) {
+	function clearClassFromSelection(klass) {
 		var blat = [], postscan = [];
 		eachSelectedRange(function (range) {
 			eachNodeInRange(range, function (node) {
@@ -133,6 +202,8 @@ jQuery(function ($) {
 		}
 		$.each(postscan, function (index, node) {
 			$(node).find('SPAN.'+klass).each(eliminate);
+			$(node).find('.'+klass).removeClass(klass);
+			$(node).removeClass(klass);
 		});
 		$.each(blat, eliminate);
 	}
@@ -154,17 +225,24 @@ jQuery(function ($) {
 		return looksLikeBlock;
 	}
 
-	function wrapSelectionIn(inline_snippet, block_snippet) {
-		var ranges = [];
-		var sel = window.getSelection();
-		for (var i = 0; i < sel.rangeCount; i++) {
-			ranges.push(sel.getRangeAt(i));
-		}
-		$.each(ranges, function (index, range) {
+	function putRangeContentsIn(range, snippet, klass) {
+		var frag = range.extractContents();
+		console.log(frag);
+		var s = $(snippet);
+		s.append(frag);
+		range.insertNode(s[0]);
+		if (klass)
+			s.find('*').addClass(klass);
+	}
+
+	function wrapSelectionInClass(klass) {
+		var inline_snippet = '<span class="'+klass+'"></span>';
+		var block_snippet = '<div class="'+klass+'"></div>';
+		eachSelectedRange(function (range) {
 			if (rangeIsBlock(range)) {
-				range.surroundContents($(block_snippet)[0]);
+				putRangeContentsIn(range, $(block_snippet)[0], klass);
 			} else {
-				range.surroundContents($(inline_snippet)[0]);
+				putRangeContentsIn(range, $(inline_snippet)[0], klass);
 			}
 		});
 	}
@@ -178,15 +256,17 @@ jQuery(function ($) {
 		$(this).click(function () {
 			console.log("execCommand %s", id);
 			if ("removeformat" === id) {
+				clearClassFromSelection('Apple-style-span');
+				clearClassFromSelection('journal-entry-highlight');
+				clearClassFromSelection('journal-entry-code');
 				document.execCommand('unlink', false, null);
 				document.execCommand('removeformat', false, null);
-				clearStyleFromSelection('Apple-style-span');
 			} else if ("highlight" === id) {
 				// Should we distinguish between inline snippets & blocks?
-				wrapSelectionIn('<span class="journal-entry-highlight"></span>', '<div class="journal-entry-highlight"></div>');
+				wrapSelectionInClass('journal-entry-highlight');
 			} else if ("code" === id) {
 				// Should we distinguish between inline snippets & blocks?
-				wrapSelectionIn('<span class="journal-entry-code"></span>', '<div class="journal-entry-code"></div>');
+				wrapSelectionInClass('journal-entry-code');
 			} else {
 				document.execCommand(id, false, arg);
 			}
