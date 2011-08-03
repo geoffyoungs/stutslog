@@ -38,10 +38,70 @@
 </div>
 </div>
 <script>
-var LoadData = <%=raw url_for(:load).to_json %>;
+
+
+var globalSaveData = {}
+function saveDataFor(date) {
+	if (!globalSaveData[date]) {
+		globalSaveData[date] = {
+			active : false,
+			every : 5,
+			timeout : null,
+			pending : false,
+			lastSave : (new Date()).getTime() // don't fire off save at first modification
+		};
+	}
+	return globalSaveData[date];
+}
+function save(saveData, entry, why) {
+	saveData.pending = false;
+	saveData.lastSave = (new Date().getTime());
+	saveData.active = true;
+	entry.find('div:empty, meta').remove();
+	console.log("Saving: " + entry.data('date') + " - " + why);
+	$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : entry.data('date'), 'entry' : entry.html()  } }).
+	complete(function () {
+		saveData.active = false;
+		if (saveData.pending)
+			triggerSave(entry);
+	});
+}
+function triggerSave(entry) {
+	var saveData = saveDataFor(entry.data('date'));
+
+	if (saveData.active) {
+		// queue save
+		saveData.pending = true;
+	} else {
+		if ((saveData.lastSave + (saveData.every*1000)) < ((new Date()).getTime()) && (!saveData.active) && (saveData.timeout)) {
+			// save now
+			window.clearTimeout(saveData.timeout)
+			saveData.timeout = null;
+			save(saveData, entry, "Waited too long");
+		} else {
+			// trigger save shortly
+			if (saveData.timeout) {
+				window.clearTimeout(saveData.timeout)
+				saveData.timeout = null;
+			}
+			saveData.timeout = window.setTimeout(function () { 
+				if (saveData.active) {
+					saveData.pending = true
+				} else {
+					save(saveData, entry, "Timeout");
+				}
+				saveData.timeout = null;
+			}, 1000);
+		}
+	}
+}
+
+	var LoadData = <%=raw url_for(:load).to_json %>;
+	var SaveActive = false;
 jQuery(function ($) {
-	$(".journal-entry").live('blur', function () {
-		$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : $(this).data('date'), 'entry' : $(this).html()  } })
+	$(".journal-entry").live('change', function () {
+	$(this).find('div:empty, meta').remove();
+		triggerSave($(this));
 	});
 
 	$("#search-results li[data-date]").live('click', function () {
