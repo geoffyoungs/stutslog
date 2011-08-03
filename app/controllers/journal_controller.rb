@@ -22,15 +22,12 @@ class JournalController < ApplicationController
 
 	def load
 		if entryDate = params['before-date']
-			@entries = JournalEntry.where(:date.lt => entryDate).order([[:date, Mongo::DESCENDING]]).limit((params[:limit]||1).to_i).all()
-			if @entries.empty?
-				render  :content_type => 'application/javascript', :text => '', :layout => false
-			end
+			@entries = JournalEntry.where(:date.lt => entryDate).order([[:date, Mongo::DESCENDING]]).limit((params[:limit]||1).to_i)
 		elsif range = params['date-range']
 			# from is the last seen date in the journal
 			# to is the desired date
 			from,to = range.split(/:/)
-			@entries = JournalEntry.where(:date.lt => from, :date.gte => to).order([[:date, Mongo::DESCENDING]]).all()
+			@entries = JournalEntry.where(:date.lt => from, :date.gte => to).order([[:date, Mongo::DESCENDING]])
 		end
 	end
 
