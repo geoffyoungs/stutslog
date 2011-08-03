@@ -219,6 +219,11 @@ body {
 	-webkit-border-radius: 3px;
 }
 
+DIV.journal-entry-code {
+	border: 1px solid #999;
+	margin: 6px 0px;
+}
+
 #search-box input[type="search"] {
 	border: 1px solid #ccc;
 	width: 90%;
