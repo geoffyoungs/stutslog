@@ -152,7 +152,7 @@ jQuery(function ($) {
 		// What is being typed?
 		var sel = window.getSelection()
 	});
-	
+
 	// Auto-scroll
 	var cont = $('#journal-pane-container');
 	var spinner = new Image('/images/ajax-spinner.gif');
@@ -183,7 +183,7 @@ jQuery(function ($) {
 			callback(range);
 		}
 	}
-	
+
 	function clearClassFromSelection(klass) {
 		var blat = [], postscan = [];
 		eachSelectedRange(function (range) {

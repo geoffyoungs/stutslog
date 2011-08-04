@@ -5,7 +5,7 @@
         <span class="date"><%= time_ago_in_words(entry.date)+" ago" %></span>
       <% end %>
     </div>
-    <div data-date="<%=raw entry.date.strftime('%Y-%m-%d') %>" class="journal-entry" contenteditable="true">
+	<div data-date="<%=raw entry.date.strftime('%Y-%m-%d') %>" class="journal-entry" data-revision="<%= entry.revision.to_i %>" contenteditable="true">
         <%=raw entry.entry %>
     </div>
 </div>

@@ -59,7 +59,22 @@ function save(saveData, entry, why) {
 	saveData.active = true;
 	entry.find('div:empty, meta').remove();
 	console.log("Saving: " + entry.data('date') + " - " + why);
-	$.ajax(<%=raw url_for(:update).to_json %>, { 'type' : 'POST',  'data' : { 'date' : entry.data('date'), 'entry' : entry.html()  } }).
+	$.ajax(<%=raw url_for(:update).to_json %>, {
+		'type' : 'POST',
+		'data' : { 'date' : entry.data('date'), 'entry' : entry.html(), 'revision' : entry.data('revision') },
+		'context' : entry,
+	}).
+	success(function (data) {
+		if (typeof(data) == 'string') {
+			data = JSON.parse(data);
+		}
+		if (data.result == 'save') {
+			$(this).data('revision', data.revision);
+		} else if (data.result == 'fail') {
+			$(this).removeAttr('contenteditable').addClass('error');
+		}
+		console.log(data);
+	}).
 	complete(function () {
 		saveData.active = false;
 		if (saveData.pending)
@@ -84,7 +99,7 @@ function triggerSave(entry) {
 				window.clearTimeout(saveData.timeout)
 				saveData.timeout = null;
 			}
-			saveData.timeout = window.setTimeout(function () { 
+			saveData.timeout = window.setTimeout(function () {
 				if (saveData.active) {
 					saveData.pending = true
 				} else {

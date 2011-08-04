@@ -42,12 +42,16 @@ class JournalController < ApplicationController
 		conditions = { :user => current_user.email, :date => params[:date] }
 		entry = JournalEntry.first(:conditions => conditions)
 		if entry.nil? && params[:entry].strip.empty?
-			render :text => 'IGNORE'
+			render :text => {'result' => 'noop'}.to_json, :type => 'application/json'
+			return
+		end
+		if entry && entry.revision.to_i > params[:revision].to_i
+			render :text => {'result' => 'fail', 'reason' => "Revision mismatch - #{entry.revision} > #{params[:revision]}"}.to_json, :type => 'application/json'
 			return
 		end
 		entry ||= JournalEntry.new(conditions)
 		entry.entry = params[:entry].to_s.strip
 		entry.save
-		render :text => 'OK'
+		render :text => {'result' => 'save', 'revision' => entry.revision}.to_json, :type => 'application/json'
 	end
 end

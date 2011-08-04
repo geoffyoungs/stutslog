@@ -200,6 +200,16 @@ body {
 	background: #ff9999;
 }
 
+.journal-entry.error:before {
+	color: #600;
+	font-weight: bold;
+	display: block;
+	content: "This journal has been edited in another location.  Refresh page to update.";
+}
+.journal-entry.error {
+	background: #f99;
+}
+
 .journal-entry-highlight {
 	background: #ffff66;
 	border: 1px solid #ffcc00;
